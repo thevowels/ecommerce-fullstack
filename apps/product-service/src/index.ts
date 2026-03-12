@@ -7,8 +7,12 @@ app.use(cors({
 	origin: ['http://localhost:3000']
 }))
 
-app.get('/', (req: Request, res: Response) => {
-  res.json("Product endpoint works!")
+app.get('/health', (req: Request, res: Response) => {
+  res.json({
+	status: "ok",
+	uptime: process.uptime(),
+	timestamp: Date.now()
+  })
 })
 
 app.listen(port, () => {

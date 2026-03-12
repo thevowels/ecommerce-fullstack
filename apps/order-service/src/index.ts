@@ -4,8 +4,12 @@ const fastify = Fastify({
 	logger: true
 });
 
-fastify.get('/', async (request,reply) =>  {
-	return({order: "service"})
+fastify.get('/health', async (request,reply) =>  {
+	return({
+		status: "ok",
+		uptime: process.uptime(),
+		timestamp: Date.now(),
+	})
 })
 
 const start = async() => {
