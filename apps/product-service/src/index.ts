@@ -29,7 +29,7 @@ app.get('/test', async (req, res) => {
 	if(!userId) {
 		return res.status(401).json({message: "You are not logged in "});
 	}
-	return res.json({ message: "Authenticated", userId: userId })
+	return res.json({ message: "Authenticated", userId: userId, product: "Product " })
   })
   
 app.listen(port, () => {
