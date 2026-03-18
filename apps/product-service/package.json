@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@repo/product-db": "*",
     "@clerk/express": "^2.0.4",
     "cors": "^2.8.6",
     "express": "^5.2.1"
