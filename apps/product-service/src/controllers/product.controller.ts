@@ -17,22 +17,32 @@ export const createProduct = async (req: Request, res: Response) => {
   }
   const product = await prisma.product.create({ data });
 
-  res.status(201).json(product);
+  res.status(201).json({ data: product });
 };
 
 export const updateProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   const data: Prisma.ProductUpdateInput = req.body;
-
-  const updatedProduct = await prisma.product.update({
-    where: { product_id: Number(id) },
-    data,
-  });
-  res.status(201).json({
-    message: "updated",
-    updatedProduct,
-  });
+  try {
+    const updatedProduct = await prisma.product.update({
+      where: { product_id: Number(id) },
+      data,
+    });
+    res.status(201).json({
+      message: "updated",
+      data: updatedProduct,
+    });
+  } catch (error: unknown) {
+	if(error instanceof Prisma.PrismaClientKnownRequestError)
+	{
+		return res.status(404).json({
+			message: "Record not found"
+		})
+	}
+	else
+		return res.status(500).send();
+  }
 };
 
 export const deleteProduct = async (req: Request, res: Response) => {
@@ -44,8 +54,9 @@ export const deleteProduct = async (req: Request, res: Response) => {
     return res.status(204).send();
   } catch (error: unknown) {
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      if (error.code === "P2025") return res.status(404).json({message: "Record not found!"})
-    } else res.status(500).json({message: 'Internal server error'})
+      if (error.code === "P2025")
+        return res.status(404).json({ message: "Record not found!" });
+    } else res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -83,7 +94,7 @@ export const getProducts = async (req: Request, res: Response) => {
     take: limit ? Number(limit) : undefined,
   });
 
-  return res.json({ message: "success", products });
+  return res.json({ message: "success", data: products });
 };
 export const getProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -97,6 +108,6 @@ export const getProduct = async (req: Request, res: Response) => {
     });
   return res.json({
     message: "success",
-    product,
+    data: product,
   });
 };
