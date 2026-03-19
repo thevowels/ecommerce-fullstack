@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:latest
+    container_name: lama-commerce-product-db
+    restart: always
+    environment:
+      POSTGRES_USER: ${PRODUCT_DB_USER}
+      POSTGRES_PASSWORD: ${PRODUCT_DB_PASSWORD}
+      POSTGRES_DB: ${PRODUCT_DB_NAME}
+    ports:
+      - "${PRODUCT_DB_PORT}:5432"
+    volumes:
+      - product_db_data:/var/lib/postgresl/data
+
+volumes:
+  product_db_data:
