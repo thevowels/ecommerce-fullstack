@@ -3,10 +3,25 @@ import { Request, Response } from "express";
 
 export const createCategory = async (req: Request, res: Response) => {
   const data: Prisma.CategoryCreateInput = req.body;
-  const category = await prisma.category.create({ data });
-  res.status(201).json({
-    data: category,
-  });
+  try{
+	const category = await prisma.category.create({ data });
+	res.status(201).json({
+	  data: category,
+	});
+  
+  }catch(error:any)
+  {
+	if(error instanceof Prisma.PrismaClientKnownRequestError)
+	{
+		if(error.code === "P2002")
+			res.status(409).json({
+				message:"Failed",
+				error: "Record with unique constraint already exists"
+			})
+	}
+	console.log(error);
+	res.status(500).send();
+  }
 };
 
 export const updateCategory = async (req: Request, res: Response) => {
@@ -43,12 +58,13 @@ export const deleteCategory = async (req: Request, res: Response) => {
       },
     });
     return res.status(204).send();
-  } catch (error: unknown) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+  } catch (error: any) {
+	console.log(error)
+    if (error instanceof Prisma.PrismaClientKnownRequestError) 
       if (error.code === "P2025")
         res.status(404).json({ message: "record not found" });
-    }
-
+    if(error.cause?.code === '23001')
+		res.status(409).json({ message: "Record has foreign relations."});
     res.status(500).send();
   }
 };
