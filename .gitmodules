@@ -1,0 +1,4 @@
+[submodule "apps/frontend"]
+	path = apps/frontend
+	url = https://github.com/thevowels/lama-ecommerce.git
+	branch = master
