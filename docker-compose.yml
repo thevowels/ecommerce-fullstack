@@ -1,5 +1,5 @@
 services:
-  db:
+  product-db:
     image: postgres:latest
     container_name: lama-commerce-product-db
     restart: always
@@ -11,6 +11,28 @@ services:
       - "${PRODUCT_DB_PORT}:5432"
     volumes:
       - product_db_data:/var/lib/postgresl/data
+  order-db:
+    image: mongo:latest
+    container_name: lama-commerce-order-db
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${ORDER_DB_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${ORDER_DB_PASSWORD:-admin}
+    ports:
+          - "${ORDER_DB_PORT}:27017" 
+    volumes:
+      - order_db_data:/data/db 
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_URL: mongodb://admin:admin@order-db:27017/
+      ME_CONFIG_BASICAUTH_ENABLED: "true"
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: admin
 
 volumes:
   product_db_data:
+  order_db_data:

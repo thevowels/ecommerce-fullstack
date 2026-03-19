@@ -2,8 +2,8 @@
   "name": "ecommerce",
   "private": true,
   "scripts": {
-	"db:up":"docker-compose up -d",
-	"db:down": "docker-compose stop",
+    "db:up": "docker-compose up -d",
+    "db:down": "docker-compose stop",
     "build": "turbo run build",
     "dev": "npm run db:up && turbo run dev",
     "lint": "turbo run lint",
@@ -13,6 +13,7 @@
   "devDependencies": {
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
     "prettier": "^3.7.4",
     "turbo": "^2.8.16",
     "typescript": "5.9.2"
