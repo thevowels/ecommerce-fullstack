@@ -1,5 +1,5 @@
 export interface CustomJWTSessionClaims{
-	medtadata?:{
+	metadata?:{
 		role?: "user" | "admin";
 	}
 }

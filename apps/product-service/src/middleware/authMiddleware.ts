@@ -1,20 +1,45 @@
-import { getAuth } from "@clerk/express"
+import { getAuth } from "@clerk/express";
 import { NextFunction, Request, Response } from "express";
+import type { CustomJWTSessionClaims } from "@repo/types";
 
 declare global {
-    namespace Express {
-        interface Request {
-            userId?: string;
-        }
+  namespace Express {
+    interface Request {
+      userId?: string;
     }
+  }
 }
 
-export const shouldBeUser = (req: Request, res: Response, next: NextFunction) => {
-    const auth = getAuth(req);
-    if (!auth.userId) {
-        return res.status(401).json({ message: "You are not logged in " });
-    }
-    req.userId = auth.userId;
+export const shouldBeUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const auth = getAuth(req);
+  if (!auth.userId) {
+    return res.status(401).json({ message: "You are not logged in " });
+  }
+  req.userId = auth.userId;
 
-    next();
-}
+  next();
+};
+
+export const shouldBeAdmin = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const auth = getAuth(req);
+
+  if (!auth.userId) {
+    return res.status(401).json({ message: "You are not logged in " });
+  }
+  const claims = auth.sessionClaims as CustomJWTSessionClaims;
+  if (claims.metadata?.role !== "admin")
+    return res.status(403).json({
+      message: "You are not authorized for this action",
+    });
+  req.userId = auth.userId;
+
+  next();
+};
